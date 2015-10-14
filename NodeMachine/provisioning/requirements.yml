@@ -1,0 +1,6 @@
+# from private github repo, installing to a relative path
+- src: https://github.com/ANXS/nodejs.git
+  path: galaxy/ANXS.nodejs
+
+- src: https://github.com/ANXS/postgresql.git
+  path: galaxy/ANXS.postgress

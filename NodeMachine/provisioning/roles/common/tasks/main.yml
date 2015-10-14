@@ -1,4 +1,13 @@
 ---
+- name: Install the aliases file
+  copy: src=aliases dest=/home/vagrant/.aliases owner=vagrant mode=0644
+
+- name: Install the bash_prompt file
+  copy: src=bash_prompt dest=/home/vagrant/.bash_prompt owner=vagrant mode=0644
+
+- name: Install the bash_profile file
+  copy: src=bash_prompt dest=/home/vagrant/.bash_profile owner=vagrant mode=0644
+
 - name: Update apt cache
   apt: update_cache=yes upgrade=safe
   tags: common

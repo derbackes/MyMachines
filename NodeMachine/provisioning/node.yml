@@ -1,0 +1,36 @@
+---
+- hosts: all
+  user: vagrant
+  sudo: yes
+  vars:
+    postgresql_admin_user: "postgres"
+    postgresql_users:
+      - name: treasury
+        pass: treasury
+        encrypted: no       # denotes if the password is already encrypted.
+    postgresql_user_privileges:
+      - name: treasury
+        db: treasury
+        priv: "ALL"
+      - name: treasury-test
+        db: treasury-test
+        priv: "ALL"
+    postgresql_databases:
+      - name: treasury
+      - name: treasury-test
+    postgresql_pg_hba_default:
+      - { type: local, database: all, user: '{{ postgresql_admin_user }}', address: '', method: '{{ postgresql_default_auth_method }}', comment: '' }
+      - { type: local, database: all, user: all, address: '',             method: '{{ postgresql_default_auth_method }}', comment: '"local" is for Unix domain socket connections only' }
+      - { type: host,  database: all, user: all, address: '127.0.0.1/32', method: '{{ postgresql_default_auth_method }}', comment: 'IPv4 local connections:' }
+      - { type: host, database: all, user: all, address: '0.0.0.0/0', method: "{{ postgresql_default_auth_method }}", comment: '' }
+      - { type: host, database: all, user: all, address: '::1/0', method: "{{ postgresql_default_auth_method }}", comment: '' }
+    postgresql_listen_addresses:
+      - "*"
+    nodejs_version: "0.12.4"
+    nodejs_install_method: "binary"
+  roles:
+    - common
+    - ANXS.nodejs
+    - gulp
+    - strongloop
+    - ANXS.postgresql

@@ -1,0 +1,31 @@
+---
+- name: Update apt cache
+  apt: update_cache=yes upgrade=safe
+  tags: common
+
+- name: Update language
+  apt: name=language-pack-en
+  tags: common
+
+- name: install the locales package
+  apt: pkg=locales state=present
+
+- name: ensure the locale exists
+  locale_gen: name=en_US.UTF-8 state=present
+
+- name: Installs common utilities for development
+  apt: name={{ item }} state=present update_cache=yes
+  with_items:
+  - build-essential
+  - sudo
+  - procps
+  - wget
+  - curl
+  - vim
+  - git
+  - unzip
+  - libfreetype6
+  - libfreetype6-dev
+  - libfontconfig1
+  - libfontconfig1-dev
+  tags: common

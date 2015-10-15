@@ -8,6 +8,9 @@
 - name: Install the bash_profile file
   copy: src=bash_prompt dest=/home/vagrant/.bash_profile owner=vagrant mode=0644
 
+- name: Install the ssh key file
+  copy: src=~/.ssh/id_rsa dest=/home/vagrant/.ssh/id_rsa owner=vagrant group=vagrant mode=0600
+
 - name: Update apt cache
   apt: update_cache=yes upgrade=safe
   tags: common

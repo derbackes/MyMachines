@@ -1,0 +1,11 @@
+---
+- hosts: art-deco
+  user: vagrant
+  sudo: yes
+  vars:
+    nodejs_version: "0.12.4"
+    nodejs_install_method: "binary"
+  roles:
+    - common
+    - ANXS.nodejs
+    - gulp

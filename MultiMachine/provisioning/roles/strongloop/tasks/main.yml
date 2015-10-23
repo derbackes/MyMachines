@@ -1,0 +1,6 @@
+---
+- name: Install Strong loop
+  npm: name=strongloop global=yes state=present
+  register: strongloopInstalled
+  tags: strongloop
+

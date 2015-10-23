@@ -1,0 +1,4 @@
+- name: Update NPM to version 2.*
+  npm: name=npm global=yes state=present version=2
+  register: npmInstalled
+  tags: nodejs

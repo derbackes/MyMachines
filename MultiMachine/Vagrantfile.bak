@@ -1,0 +1,54 @@
+# -*- mode: ruby -*-
+# vi: set ft=ruby :
+# Vagrantfile API/syntax version. Don't touch unless you know what you're doing!
+VAGRANTFILE_API_VERSION = "2"
+
+# ---- Configuration variables ----
+
+GUI               = false # Enable/Disable GUI
+RAM               = 512   # Default memory size in MB
+
+# Network configuration
+DOMAIN            = ".local"
+NETWORK           = "192.168.111."
+NETMASK           = "255.255.255.0"
+
+# Default Virtualbox .box
+# Source: https://github.com/ginas/vagrant-debian-wheezy-64
+BOX               = 'ubuntu/trusty64'
+
+
+HOSTS = {
+   "art-deco" => [NETWORK+"200", RAM, GUI, BOX],
+   "liqui" => [NETWORK+"100", RAM, GUI, BOX],
+   "mongo" => [NETWORK+"11", RAM, GUI, BOX],
+}
+
+
+# Execution Block
+Vagrant.configure(2) do |config|
+  HOSTS.each do | (name, cfg) |
+    ipaddr, ram, gui, box = cfg
+
+    config.vm.define name do |machine|
+      machine.vm.box     = box
+      #machine.vm.box_url = BOX_URL
+      machine.vm.guest = :debian
+      machine.vm.provider "virtualbox" do |vbox|
+        vbox.gui    = gui
+        vbox.memory = ram
+      end
+
+      machine.vm.hostname = name + DOMAIN
+      machine.vm.network 'private_network', ip: ipaddr, netmask: NETMASK
+    end
+  end # HOSTS-each
+
+  #provisions the environment
+  config.vm.provision "ansible" do |ansible|
+    ansible.limit = 'all'
+    ansible.extra_vars = { user: "vagrant" }
+    #ansible.inventory_path = "provisioning/hosts"
+    ansible.playbook = "provisioning/art-deco.yml"
+  end
+end

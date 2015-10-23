@@ -1,0 +1,7 @@
+---
+- name: Install project dependencies
+  command: chdir=/home/vagrant/application {{ item }}
+  with_items:
+  - npm install
+  sudo: yes
+  sudo_user: vagrant

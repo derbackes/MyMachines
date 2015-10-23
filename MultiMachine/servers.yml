@@ -1,0 +1,9 @@
+---
+- name: art-deco
+  box: ubuntu/trusty64
+  ram: 512
+  ip: 192.168.111.101
+- name: liqui
+  box: ubuntu/trusty64
+  ram: 512
+  ip: 192.168.111.102

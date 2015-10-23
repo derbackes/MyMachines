@@ -1,0 +1,5 @@
+---
+- name: Install gulp
+  npm: name=gulp global=yes state=present
+  register: gulpInstalled
+  tags: gulp

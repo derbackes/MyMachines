@@ -30,7 +30,7 @@
     nodejs_install_method: "binary"
   roles:
     - common
-    - ANXS.nodejs
+    - Heroqu.nodejs4x
     - gulp
-    - strongloop
+  #  - strongloop
     - ANXS.postgresql

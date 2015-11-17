@@ -15,8 +15,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.network :private_network, ip: "192.168.111.71"
 
   #config.vm.network "forwarded_port", guest: 5432, host: 5442
-  #config.vm.network "forwarded_port", guest: 8080, host: 8080
-  #config.vm.network "forwarded_port", guest: 8090, host: 8090
+  config.vm.network "forwarded_port", guest: 3000, host: 3000
+  config.vm.network "forwarded_port", guest: 8090, host: 8090
 
   #syncs entire project directory to ~/application on target machine
   #config.vm.synced_folder "..", "/home/vagrant/apps", :nfs => true
@@ -38,4 +38,20 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       ansible.playbook = "provisioning/" + ENV['PLAYBOOK'] + ".yml"
     end
   end
+
+  config.trigger.after [:up, :reload, :provision], :stdout => true do
+
+  system('echo "
+  rdr pass inet proto tcp from any to any port 3000 -> 127.0.0.1 port 3000
+  rdr pass inet proto tcp from any to any port 8090 -> 127.0.0.1 port 8090
+  " | sudo pfctl -ef - >/dev/null 2>&1; echo "Add Port Forwarding (80 => 8080)\nAdd Port Forwarding (443 => 8443)"')
+
+  end
 end
+# Enable forwarding on OS X - El C.
+# sudo ifconfig lo0 alias 127.0.0.2 up
+# For a file:
+# rdr pass proto tcp from any to any port 80 -> 127.0.0.2 port 8080
+# From a terminal
+# echo "rdr pass proto tcp from any to any port 3000 -> 127.0.0.2 port 8080" | pfctl -Ef -
+# echo "rdr pass proto tcp from any to any port 8090 -> 127.0.0.2 port 8090" | pfctl -Ef -

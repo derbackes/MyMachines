@@ -23,28 +23,30 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   #config.vm.synced_folder "..", "/home/vagrant/apps"
 
   config.vm.provider "virtualbox" do |v|
-    v.customize ["modifyvm", :id, "--memory", "1024"]
+    v.customize ["modifyvm", :id, "--memory", "4096"]
   end
 
+  #config.vm.provision "shell", path: "provisioning/install.sh"
+
   #provisions the environment
-  config.vm.provision "ansible" do |ansible|
-    ansible.limit = 'all'
-    ansible.extra_vars = { user: "vagrant" }
-    ansible.inventory_path = "provisioning/hosts"
+  #config.vm.provision "ansible" do |ansible|
+  #  ansible.limit = 'all'
+  #  ansible.extra_vars = { user: "vagrant" }
+  #  ansible.inventory_path = "provisioning/hosts"
     # ENV['PLAYBOOK']
-    if ENV['PLAYBOOK'].nil?
-      ansible.playbook = "provisioning/mean.yml"
-    else
-      ansible.playbook = "provisioning/" + ENV['PLAYBOOK'] + ".yml"
-    end
-  end
+  #  if ENV['PLAYBOOK'].nil?
+  #    ansible.playbook = "provisioning/mean.yml"
+  #  else
+  #    ansible.playbook = "provisioning/" + ENV['PLAYBOOK'] + ".yml"
+  #  end
+  #end
 
   config.trigger.after [:up, :reload, :provision], :stdout => true do
 
   system('echo "
   rdr pass inet proto tcp from any to any port 3000 -> 127.0.0.1 port 3000
   rdr pass inet proto tcp from any to any port 8090 -> 127.0.0.1 port 8090
-  " | sudo pfctl -ef - >/dev/null 2>&1; echo "Add Port Forwarding (80 => 8080)\nAdd Port Forwarding (443 => 8443)"')
+  " | sudo pfctl -ef - >/dev/null 2>&1; echo "Add Port Forwarding (3000 => 3000)\nAdd Port Forwarding (8090 => 8090)"')
 
   end
 end
